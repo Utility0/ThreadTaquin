@@ -150,6 +150,7 @@ class Agent(Thread):
             path = self.pathFinding(self.objective)[1]
             ## Si il y a un agent demande à bouger ##
             if Agent.grid[path[0]][path[1]] != None:
+                Agent.pushMessage(Order(self, self, path))
                 Agent.pushMessage(Request(self, Agent.grid[path[0]][path[1]], None, None, None))
             else:
                 self.move(path)
@@ -196,16 +197,13 @@ class Agent(Thread):
     def move(self, position):
         #print('Agent', self.id, 'se déplace de', self.position, 'à', position)
         print('Agent', self.id, 'se déplace de', self.position, 'à', position)
+        if Agent.grid[position[0]][position[1]] != None:
+            print('Agent', self.id, 'est bloqué par', Agent.grid[position[0]][position[1]].id)
+            raise Exception('Agent', self.id, 'est bloqué par', Agent.grid[position[0]][position[1]].id)
         Agent.grid[self.position[0]][self.position[1]] = None
         self.position = position
         Agent.grid[self.position[0]][self.position[1]] = self
-        Agent.printGrid()
-
-
-
-
-
-
+        # Agent.printGrid()
 
     def pathFinding(self, objective):
         ## A* algorithm ##
@@ -286,7 +284,7 @@ class Agent(Thread):
         
 
 if __name__ == '__main__':
-    maxSize = (5, 5)
+    maxSize = (4, 4)
     Agent.initGrid(maxSize)
 
     agents = []
@@ -295,12 +293,11 @@ if __name__ == '__main__':
     couples = list(zip(possiblePositions, possibleObjectives))
     # shuffle(couples)
     for i in range((maxSize[0] * maxSize[1] )-1):
-    # for i in range(15):
+    # for i in range(24):
         agents.append(Agent(i, couples[i][0], couples[i][1]))
     for _ in range(1000):
         Agent.randomMovement()
 
-    Agent.printGrid()
 
 
     for i in agents:
@@ -309,10 +306,6 @@ if __name__ == '__main__':
     start = time.time()
     isDone = False
     while not isDone:
-        time.sleep(5)
-        Agent.semaphore.acquire()
-        Agent.printGrid()
-        Agent.semaphore.release()
         for i in agents:
             if i.objective != i.position:
                 isDone = False
