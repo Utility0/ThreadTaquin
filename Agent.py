@@ -138,7 +138,6 @@ class Agent(Thread):
                 return
 
     def updateMaster(self):
-        #print('Agent', self.id, 'est le maître à position', self.position)
         ## Is Master ##
         if self.position == self.objective:
             ## Is at objective ##
@@ -148,8 +147,8 @@ class Agent(Thread):
         else:
             ## Doit se déplacer ##
             path = self.pathFinding(self.objective)[1]
-            ## Si il y a un agent demande à bouger ##
             if Agent.grid[path[0]][path[1]] != None:
+                ## Si il y a un agent demande à bouger ##
                 Agent.pushMessage(Order(self, self, path))
                 Agent.pushMessage(Request(self, Agent.grid[path[0]][path[1]], None, None, None))
             else:
@@ -157,7 +156,6 @@ class Agent(Thread):
         pass
 
     def updateRequest(self):
-        #print('Agent', self.id, 'reçoit une demande à position', self.position)
         ## Is Request ##
         Agent.popMessage()
         ## Trouver l'emplacement vide le plus proche ##
@@ -187,7 +185,6 @@ class Agent(Thread):
         for x in range(Agent.gridSize[0]):
             for y in range(Agent.gridSize[1]):
                 if Agent.grid[x][y] == None:
-                    # print(x,y,Agent.grid[x][y], end="\n")
                     emptyCoords.append((x, y))
         ## Trier par distance de Manhattan ##
         emptyCoords.sort(key=lambda x: abs(x[0] - pos[0]) + abs(x[1] - pos[1]))
@@ -203,7 +200,7 @@ class Agent(Thread):
         Agent.grid[self.position[0]][self.position[1]] = None
         self.position = position
         Agent.grid[self.position[0]][self.position[1]] = self
-        # Agent.printGrid()
+        Agent.printGrid()
 
     def pathFinding(self, objective):
         ## A* algorithm ##
@@ -284,7 +281,7 @@ class Agent(Thread):
         
 
 if __name__ == '__main__':
-    maxSize = (4, 4)
+    maxSize = (10, 10)
     Agent.initGrid(maxSize)
 
     agents = []
@@ -293,7 +290,7 @@ if __name__ == '__main__':
     couples = list(zip(possiblePositions, possibleObjectives))
     # shuffle(couples)
     for i in range((maxSize[0] * maxSize[1] )-1):
-    # for i in range(24):
+    # for i in range(80):
         agents.append(Agent(i, couples[i][0], couples[i][1]))
     for _ in range(1000):
         Agent.randomMovement()
