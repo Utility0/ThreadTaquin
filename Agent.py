@@ -288,10 +288,22 @@ if __name__ == '__main__':
     possiblePositions = [(i, j) for i in range(maxSize[0]) for j in range(maxSize[1])]
     possibleObjectives = [(i, j) for i in range(maxSize[0]) for j in range(maxSize[1])]
     couples = list(zip(possiblePositions, possibleObjectives))
-    # shuffle(couples)
+    ## Grille Remplie : ##
     for i in range((maxSize[0] * maxSize[1] )-1):
-    # for i in range(80):
         agents.append(Agent(i, couples[i][0], couples[i][1]))
+    ## ------------------- ##
+
+    ## Grille Aléatoire :
+    # shuffle(couples)
+    #for i in range(80):
+    #	agents.append(Agent(i, couples[i][0], couples[i][1]))
+    ## ------------------- ##
+
+    ## Agent Spécifiques :
+    # agent = Agent(0, (0,1), (3,0))
+    # agents.append(agent)
+    ## ------------------- ##i
+
     for _ in range(1000):
         Agent.randomMovement()
 
